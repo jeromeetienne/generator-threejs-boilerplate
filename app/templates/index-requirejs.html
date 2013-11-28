@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <script src='vendor/three.js/build/three.js'></script>
-<script src="../../../vendor/require.js/require.js"></script>
+<script src="vendor/require.js/require.js"></script>
 <body style='margin: 0px; background-color: #bbbbbb;overflow: hidden;'><script>
 require([], function(){
 	var renderer	= new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 
-	var updateFcts	= [];
+	var onRenderFcts= [];
 	var scene	= new THREE.Scene();
 	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100 );
 	camera.position.z = 3;
@@ -20,9 +20,9 @@ require([], function(){
 	var mesh	= new THREE.Mesh( geometry, material );
 	scene.add( mesh );
 	
-	updateFcts.push(function(delta, now){
-		// mesh.rotation.x += 1 * delta;
-		// mesh.rotation.y += 2 * delta;		
+	onRenderFcts.push(function(delta, now){
+		mesh.rotateX(0.5 * delta);
+		mesh.rotateY(2.0 * delta);		
 	})
 	
 	//////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ require([], function(){
 		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
 		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 	}, false)
-	updateFcts.push(function(delta, now){
+	onRenderFcts.push(function(delta, now){
 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3)
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3)
 		camera.lookAt( scene.position )
@@ -43,7 +43,7 @@ require([], function(){
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the scene						//
 	//////////////////////////////////////////////////////////////////////////////////
-	updateFcts.push(function(){
+	onRenderFcts.push(function(){
 		renderer.render( scene, camera );		
 	})
 	
@@ -59,8 +59,8 @@ require([], function(){
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
 		lastTimeMsec	= nowMsec
 		// call each update function
-		updateFcts.forEach(function(updateFn){
-			updateFn(deltaMsec/1000, nowMsec/1000)
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
 })
