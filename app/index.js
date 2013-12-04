@@ -17,20 +17,11 @@ var ThreejsGenerator = module.exports = function ThreejsGenerator(args, options,
 util.inherits(ThreejsGenerator, yeoman.generators.Base);
 
 ThreejsGenerator.prototype.askFor = function askFor() {
-  var cb = this.async();
+	var cb = this.async();
 
-  // have Yeoman greet the user.
-  console.log(this.yeoman);
-/**
- * * add window resize.js
- * * add detector.js
- * * DONE use phong as default material
- *   * use torus knot as default object
- * * DONE setup a 3 point lighting
- * 
- * "Would you like to fine tune your three.js boilerplate y/n" default to no
- * * then ask all the questions
- */
+	// have Yeoman greet the user.
+	console.log(this.yeoman);
+
 	this.prompt([{
 		type: 'confirm',
 		name: 'defaultOptions',
@@ -68,8 +59,6 @@ ThreejsGenerator.prototype.askFor = function askFor() {
 			this.withDetectorjs	= props.withDetectorjs;
 			cb();
 		}.bind(this));
-
-		//cb();
 	}.bind(this));
 };
 
