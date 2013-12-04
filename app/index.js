@@ -21,38 +21,73 @@ ThreejsGenerator.prototype.askFor = function askFor() {
 
   // have Yeoman greet the user.
   console.log(this.yeoman);
+/**
+ * * add window resize.js
+ * * add detector.js
+ * * DONE use phong as default material
+ *   * use torus knot as default object
+ * * DONE setup a 3 point lighting
+ * 
+ * "Would you like to fine tune your three.js boilerplate y/n" default to no
+ * * then ask all the questions
+ */
+	this.prompt([{
+		type: 'confirm',
+		name: 'defaultOptions',
+		message: 'Would you the default one?',
+		default: true
+	}], function (props) {
+		this.defaultOptions	= props.defaultOptions
+		this.withRequirejs	= true
+		this.withDetectorjs	= true
+		this.withWindowResize	= true
 
-  var prompts = [{
-    type: 'confirm',
-    name: 'withRequirejs',
-    message: 'Would you like to add require.js?',
-    default: false
-  }];
+		if( this.defaultOptions === true ){
+			cb();
+			return;
+		}
 
-  this.prompt(prompts, function (props) {
-    this.withRequirejs = props.withRequirejs;
+		this.prompt([{
+			type	: 'confirm',
+			name	: 'withRequirejs',
+			message	: 'Would you like to add require.js?',
+			default	: true
+		}, {
+			type	: 'confirm',
+			name	: 'withDetectorjs',
+			message	: 'Would you like to support webgl detection?',
+			default	: true
+		}, {
+			type	: 'confirm',
+			name	: 'withWindowResize',
+			message	: 'Would you like to support window resize?',
+			default	: true			
+		}, ], function (props) {
+			this.withRequirejs	= props.withRequirejs;
+			this.withWindowResize	= props.withWindowResize;
+			this.withDetectorjs	= props.withDetectorjs;
+			cb();
+		}.bind(this));
 
-    cb();
-  }.bind(this));
+		//cb();
+	}.bind(this));
 };
 
 ThreejsGenerator.prototype.app = function app() {
 
-  this.copy('Makefile', 'Makefile');
+	this.copy('Makefile', 'Makefile');
+	this.copy('index.html', 'index.html');   
+	this.copy('vendor/three.js/build/three.js', 'vendor/three.js/build/three.js');
 
-  this.mkdir('vendor');
-
-  this.mkdir('vendor/three.js');
-  this.mkdir('vendor/three.js/build');
-  this.copy('vendor/three.js/build/three.js', 'vendor/three.js/build/three.js');
-
-  if( this.withRequirejs ){
-    this.mkdir('vendor/require.js');
-    this.copy('vendor/require.js/require.js', 'vendor/require.js/require.js');
-    this.copy('index-requirejs.html', 'index.html');
-  }else{
-    this.copy('index-raw.html', 'index.html');   
-  }
+	if( this.withWindowResize ){
+		this.copy( 'vendor/threex.windowresize.js', 'vendor/threex.windowresize.js');
+	}
+	if( this.withDetectorjs ){
+		this.copy('vendor/three.js/examples/js/Detector.js', 'vendor/three.js/examples/js/Detector.js');
+	}
+	if( this.withRequirejs ){
+		this.copy('vendor/require.js/require.js', 'vendor/require.js/require.js');
+	}
 };
 
 ThreejsGenerator.prototype.projectfiles = function projectfiles() {
